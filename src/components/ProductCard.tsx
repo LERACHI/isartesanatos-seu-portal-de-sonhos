@@ -3,6 +3,7 @@ import { Heart, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/hooks/useProducts";
 import { useCart } from "@/hooks/useCart";
+import { useFavorites } from "@/hooks/useFavorites";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 
@@ -12,6 +13,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const { user } = useAuth();
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -23,12 +25,24 @@ const ProductCard = ({ product }: ProductCardProps) => {
       });
       return;
     }
+    if (product.stock <= 0) {
+      toast({ 
+        title: "Produto esgotado",
+        variant: "destructive"
+      });
+      return;
+    }
     addToCart.mutate({
       productId: product.id,
       quantity: 1,
       size: product.sizes[0],
       color: product.colors[0],
     });
+  };
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    toggleFavorite(product.id, product.name, product.images[0]);
   };
 
   const formatPrice = (price: number) => {
@@ -43,6 +57,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
     junina: "Festa Junina",
     tematico: "Temático",
   };
+
+  const favorite = isFavorite(product.id);
 
   return (
     <Link
@@ -60,17 +76,30 @@ const ProductCard = ({ product }: ProductCardProps) => {
             Destaque
           </span>
         )}
-        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-3 right-3 flex gap-2">
           <Button
             size="icon"
             variant="secondary"
-            className="rounded-full shadow-md"
+            className={`rounded-full shadow-md ${favorite ? 'text-destructive' : ''}`}
+            onClick={handleToggleFavorite}
+          >
+            <Heart className={`w-4 h-4 ${favorite ? 'fill-current' : ''}`} />
+          </Button>
+          <Button
+            size="icon"
+            variant="secondary"
+            className="rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
             onClick={handleAddToCart}
+            disabled={product.stock <= 0}
           >
             <ShoppingCart className="w-4 h-4" />
           </Button>
         </div>
-        {product.stock <= 5 && product.stock > 0 && (
+        {product.stock <= 0 ? (
+          <span className="absolute bottom-3 left-3 bg-destructive text-destructive-foreground text-xs font-medium px-2 py-1 rounded-full">
+            Esgotado
+          </span>
+        ) : product.stock <= 5 && (
           <span className="absolute bottom-3 left-3 bg-destructive text-destructive-foreground text-xs font-medium px-2 py-1 rounded-full">
             Últimas {product.stock} peças
           </span>

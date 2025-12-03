@@ -52,6 +52,15 @@ export const useCart = () => {
     }) => {
       if (!user) throw new Error("Usuário não autenticado");
       
+      // Check product stock
+      const { data: product } = await supabase
+        .from("products")
+        .select("stock, name")
+        .eq("id", productId)
+        .maybeSingle();
+      
+      if (!product) throw new Error("Produto não encontrado");
+      
       // Check if item already exists
       const { data: existing } = await supabase
         .from("cart_items")
@@ -62,10 +71,17 @@ export const useCart = () => {
         .eq("color", color || null)
         .maybeSingle();
       
+      const currentQuantity = existing?.quantity || 0;
+      const newTotalQuantity = currentQuantity + quantity;
+      
+      if (newTotalQuantity > product.stock) {
+        throw new Error(`Estoque insuficiente. Disponível: ${product.stock}, No carrinho: ${currentQuantity}`);
+      }
+      
       if (existing) {
         const { error } = await supabase
           .from("cart_items")
-          .update({ quantity: existing.quantity + quantity })
+          .update({ quantity: newTotalQuantity })
           .eq("id", existing.id);
         if (error) throw error;
       } else {
@@ -85,8 +101,8 @@ export const useCart = () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       toast({ title: "Produto adicionado ao carrinho!" });
     },
-    onError: () => {
-      toast({ title: "Erro ao adicionar ao carrinho", variant: "destructive" });
+    onError: (error: Error) => {
+      toast({ title: error.message || "Erro ao adicionar ao carrinho", variant: "destructive" });
     },
   });
 
@@ -99,6 +115,26 @@ export const useCart = () => {
           .eq("id", itemId);
         if (error) throw error;
       } else {
+        // Get the cart item to find the product
+        const { data: cartItem } = await supabase
+          .from("cart_items")
+          .select("product_id")
+          .eq("id", itemId)
+          .maybeSingle();
+        
+        if (cartItem) {
+          // Check product stock
+          const { data: product } = await supabase
+            .from("products")
+            .select("stock")
+            .eq("id", cartItem.product_id)
+            .maybeSingle();
+          
+          if (product && quantity > product.stock) {
+            throw new Error(`Estoque insuficiente. Disponível: ${product.stock}`);
+          }
+        }
+        
         const { error } = await supabase
           .from("cart_items")
           .update({ quantity })
@@ -108,6 +144,9 @@ export const useCart = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+    onError: (error: Error) => {
+      toast({ title: error.message || "Erro ao atualizar quantidade", variant: "destructive" });
     },
   });
 
