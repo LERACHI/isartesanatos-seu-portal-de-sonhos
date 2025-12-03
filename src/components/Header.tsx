@@ -1,9 +1,19 @@
 import { useState } from "react";
-import { Menu, X, Instagram, Facebook, MessageCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Menu, X, Instagram, Facebook, MessageCircle, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut, loading } = useAuth();
 
   const navLinks = [
     { name: "Início", href: "#inicio" },
@@ -18,6 +28,10 @@ const Header = () => {
     { icon: Facebook, href: "https://www.facebook.com/isartesanatos/", label: "Facebook" },
     { icon: MessageCircle, href: "https://api.whatsapp.com/send?phone=5545999213366", label: "WhatsApp" },
   ];
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
@@ -62,6 +76,40 @@ const Header = () => {
                 </a>
               ))}
             </div>
+
+            {/* Auth Button */}
+            {!loading && (
+              user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <User className="w-4 h-4" />
+                      <span className="max-w-[100px] truncate">
+                        {user.user_metadata?.full_name || user.email?.split("@")[0]}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem className="text-muted-foreground text-xs">
+                      {user.email}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut} className="text-destructive cursor-pointer">
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sair
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/auth">
+                    <User className="w-4 h-4 mr-2" />
+                    Entrar
+                  </Link>
+                </Button>
+              )
+            )}
+
             <Button variant="whatsapp" size="sm" asChild>
               <a
                 href="https://api.whatsapp.com/send?phone=5545999213366"
@@ -101,6 +149,38 @@ const Header = () => {
                 </a>
               ))}
             </nav>
+
+            {/* Mobile Auth */}
+            {!loading && (
+              <div className="mt-4 pt-4 border-t border-border">
+                {user ? (
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      Olá, {user.user_metadata?.full_name || user.email?.split("@")[0]}
+                    </p>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        handleSignOut();
+                        setIsMenuOpen(false);
+                      }}
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sair
+                    </Button>
+                  </div>
+                ) : (
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                      <User className="w-4 h-4 mr-2" />
+                      Entrar / Criar conta
+                    </Link>
+                  </Button>
+                )}
+              </div>
+            )}
+
             <div className="flex items-center gap-4 mt-6 pt-6 border-t border-border">
               {socialLinks.map((social) => (
                 <a
