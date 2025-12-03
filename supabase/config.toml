@@ -1,1 +1,4 @@
 project_id = "bztjmkgtelwsozluymvw"
+
+[functions.calculate-shipping]
+verify_jwt = false
