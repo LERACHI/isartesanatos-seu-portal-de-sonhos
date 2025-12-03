@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import categoryJunina from "@/assets/category-junina.jpg";
 import categoryTematico from "@/assets/category-tematico.jpg";
@@ -9,24 +10,21 @@ const categories = [
     name: "Fantasias Juninas",
     description: "Vestidos caipiras tradicionais com acabamento premium, feitos à mão com tecidos xadrez, rendas e fitas.",
     image: categoryJunina,
-    products: "156 produtos",
-    href: "https://www.elo7.com.br/lista/isartesanatos?segment=product&q=junina",
+    category: "junina",
   },
   {
     id: 2,
     name: "Vestidos Temáticos",
     description: "Princesas, personagens e temas especiais. Cada peça é uma obra de arte para momentos inesquecíveis.",
     image: categoryTematico,
-    products: "98 produtos",
-    href: "https://www.elo7.com.br/lista/isartesanatos?segment=product&q=vestido",
+    category: "tematico",
   },
   {
     id: 3,
     name: "Linha Bebê",
     description: "Peças delicadas e confortáveis para os pequenos, com tecidos suaves e detalhes encantadores.",
     image: categoryBebe,
-    products: "84 produtos",
-    href: "https://www.elo7.com.br/lista/isartesanatos?segment=product&q=bebe",
+    category: "bebe",
   },
 ];
 
@@ -51,11 +49,9 @@ const Categories = () => {
         {/* Categories Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {categories.map((category, index) => (
-            <a
+            <Link
               key={category.id}
-              href={category.href}
-              target="_blank"
-              rel="noopener noreferrer"
+              to={`/produtos?categoria=${category.category}`}
               className="group relative bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-500 animate-slide-up"
               style={{ animationDelay: `${index * 100}ms` }}
             >
@@ -75,9 +71,6 @@ const Categories = () => {
               <div className="absolute bottom-0 left-0 right-0 p-6 text-primary-foreground">
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="inline-block px-3 py-1 bg-primary-foreground/20 backdrop-blur-sm rounded-full text-xs font-body mb-3">
-                      {category.products}
-                    </span>
                     <h3 className="font-display text-2xl font-semibold mb-2">
                       {category.name}
                     </h3>
@@ -90,21 +83,19 @@ const Categories = () => {
                   </div>
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
 
         {/* View All Button */}
         <div className="text-center mt-12">
-          <a
-            href="https://www.elo7.com.br/isartesanatos"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/produtos"
             className="inline-flex items-center gap-2 font-body text-primary hover:text-accent transition-colors duration-300"
           >
-            Ver todos os 338 produtos
+            Ver todos os produtos
             <ArrowUpRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
       </div>
     </section>
