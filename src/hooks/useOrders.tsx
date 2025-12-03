@@ -64,16 +64,19 @@ export const useOrders = () => {
       state: string;
       zip: string;
       notes?: string;
+      shippingCost?: number;
     }) => {
       if (!user) throw new Error("Usuário não autenticado");
       if (cartItems.length === 0) throw new Error("Carrinho vazio");
+
+      const orderTotal = cartTotal + (shippingData.shippingCost || 0);
 
       // Create order
       const { data: order, error: orderError } = await supabase
         .from("orders")
         .insert({
           user_id: user.id,
-          total: cartTotal,
+          total: orderTotal,
           shipping_address: shippingData.address,
           shipping_city: shippingData.city,
           shipping_state: shippingData.state,

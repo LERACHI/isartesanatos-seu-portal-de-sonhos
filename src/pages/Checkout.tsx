@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Truck, Check, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -11,12 +11,14 @@ import { Label } from "@/components/ui/label";
 import { useCart } from "@/hooks/useCart";
 import { useOrders } from "@/hooks/useOrders";
 import { useAuth } from "@/hooks/useAuth";
+import { useShipping } from "@/hooks/useShipping";
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { items, cartTotal } = useCart();
   const { createOrder } = useOrders();
+  const { calculateShipping, isCalculating, shippingResult, shippingCost, error: shippingError } = useShipping();
 
   const [formData, setFormData] = useState({
     address: "",
@@ -33,11 +35,51 @@ const Checkout = () => {
     }).format(price);
   };
 
+  const formatCep = (value: string) => {
+    const digits = value.replace(/\D/g, '');
+    if (digits.length <= 5) return digits;
+    return `${digits.slice(0, 5)}-${digits.slice(5, 8)}`;
+  };
+
+  const handleCepChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatCep(e.target.value);
+    setFormData({ ...formData, zip: formatted });
+  };
+
+  const handleCalculateShipping = async () => {
+    if (formData.zip.replace(/\D/g, '').length === 8) {
+      const result = await calculateShipping(formData.zip, cartTotal);
+      if (result) {
+        setFormData(prev => ({
+          ...prev,
+          city: result.address.city,
+          state: result.address.state,
+          address: result.address.street 
+            ? `${result.address.street}, ${result.address.neighborhood}` 
+            : prev.address,
+        }));
+      }
+    }
+  };
+
+  // Auto-calculate shipping when CEP is complete
+  useEffect(() => {
+    const cleanCep = formData.zip.replace(/\D/g, '');
+    if (cleanCep.length === 8 && !shippingResult) {
+      handleCalculateShipping();
+    }
+  }, [formData.zip]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createOrder.mutateAsync(formData);
+    await createOrder.mutateAsync({
+      ...formData,
+      shippingCost,
+    });
     navigate("/pedidos");
   };
+
+  const orderTotal = cartTotal + shippingCost;
 
   if (!user) {
     return (
@@ -107,6 +149,62 @@ const Checkout = () => {
                   Endereço de Entrega
                 </h2>
 
+                {/* CEP with calculate button */}
+                <div className="space-y-2">
+                  <Label htmlFor="zip">CEP</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="zip"
+                      placeholder="00000-000"
+                      value={formData.zip}
+                      onChange={handleCepChange}
+                      maxLength={9}
+                      required
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleCalculateShipping}
+                      disabled={isCalculating || formData.zip.replace(/\D/g, '').length !== 8}
+                    >
+                      {isCalculating ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Truck className="w-4 h-4" />
+                      )}
+                      <span className="ml-2 hidden sm:inline">Calcular Frete</span>
+                    </Button>
+                  </div>
+                  {shippingError && (
+                    <p className="text-sm text-destructive">{shippingError}</p>
+                  )}
+                </div>
+
+                {/* Shipping result */}
+                {shippingResult && (
+                  <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Truck className="w-4 h-4 text-primary" />
+                      <span className="font-medium">
+                        {shippingResult.shipping.isFreeShipping ? (
+                          <span className="text-green-600">Frete Grátis!</span>
+                        ) : (
+                          <>Frete: {formatPrice(shippingResult.shipping.cost)}</>
+                        )}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Entrega estimada: {shippingResult.shipping.estimatedDays}
+                    </p>
+                    {!shippingResult.shipping.isFreeShipping && shippingResult.shipping.amountForFreeShipping > 0 && (
+                      <p className="text-xs text-primary">
+                        Faltam {formatPrice(shippingResult.shipping.amountForFreeShipping)} para frete grátis!
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label htmlFor="address">Endereço completo</Label>
                   <Input
@@ -152,19 +250,6 @@ const Checkout = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="zip">CEP</Label>
-                  <Input
-                    id="zip"
-                    placeholder="00000-000"
-                    value={formData.zip}
-                    onChange={(e) =>
-                      setFormData({ ...formData, zip: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
                   <Label htmlFor="notes">Observações (opcional)</Label>
                   <Textarea
                     id="notes"
@@ -181,10 +266,15 @@ const Checkout = () => {
                 type="submit"
                 size="lg"
                 className="w-full"
-                disabled={createOrder.isPending}
+                disabled={createOrder.isPending || !shippingResult}
               >
                 {createOrder.isPending ? "Processando..." : "Confirmar Pedido"}
               </Button>
+              {!shippingResult && (
+                <p className="text-sm text-muted-foreground text-center">
+                  Calcule o frete para continuar
+                </p>
+              )}
             </form>
 
             {/* Order Summary */}
@@ -225,15 +315,37 @@ const Checkout = () => {
                   <span>Subtotal</span>
                   <span>{formatPrice(cartTotal)}</span>
                 </div>
-                <div className="flex justify-between text-sm text-muted-foreground mb-2">
-                  <span>Frete</span>
-                  <span>A calcular</span>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-muted-foreground">Frete</span>
+                  {isCalculating ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : shippingResult ? (
+                    shippingResult.shipping.isFreeShipping ? (
+                      <span className="text-green-600 font-medium flex items-center gap-1">
+                        <Check className="w-3 h-3" />
+                        Grátis
+                      </span>
+                    ) : (
+                      <span>{formatPrice(shippingCost)}</span>
+                    )
+                  ) : (
+                    <span className="text-muted-foreground">Informe o CEP</span>
+                  )}
                 </div>
                 <div className="flex justify-between text-lg font-semibold pt-2 border-t border-border">
                   <span>Total</span>
-                  <span className="text-primary">{formatPrice(cartTotal)}</span>
+                  <span className="text-primary">{formatPrice(orderTotal)}</span>
                 </div>
               </div>
+
+              {/* Free shipping banner */}
+              {!shippingResult?.shipping.isFreeShipping && (
+                <div className="bg-primary/10 rounded-lg p-3 text-center">
+                  <p className="text-sm text-primary font-medium">
+                    Frete grátis acima de {formatPrice(299.90)}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
