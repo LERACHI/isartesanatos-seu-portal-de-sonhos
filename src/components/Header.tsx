@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, Instagram, Facebook, MessageCircle, User, LogOut, ShoppingCart, Package } from "lucide-react";
+import { Menu, X, Instagram, Facebook, MessageCircle, User, LogOut, ShoppingCart, Package, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
@@ -120,6 +120,12 @@ const Header = () => {
                         Meus Pedidos
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/favoritos" className="cursor-pointer">
+                        <Heart className="w-4 h-4 mr-2" />
+                        Favoritos
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut} className="text-destructive cursor-pointer">
                       <LogOut className="w-4 h-4 mr-2" />
@@ -203,6 +209,12 @@ const Header = () => {
                       <Link to="/pedidos" onClick={() => setIsMenuOpen(false)}>
                         <Package className="w-4 h-4 mr-2" />
                         Meus Pedidos
+                      </Link>
+                    </Button>
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link to="/favoritos" onClick={() => setIsMenuOpen(false)}>
+                        <Heart className="w-4 h-4 mr-2" />
+                        Favoritos
                       </Link>
                     </Button>
                     <Button

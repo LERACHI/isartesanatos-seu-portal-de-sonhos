@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useProduct } from "@/hooks/useProducts";
 import { useCart } from "@/hooks/useCart";
+import { useFavorites } from "@/hooks/useFavorites";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,6 +16,7 @@ const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading } = useProduct(id || "");
   const { addToCart } = useCart();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const { user } = useAuth();
 
   const [selectedSize, setSelectedSize] = useState<string>("");
@@ -37,6 +39,14 @@ const ProductDetail = () => {
       });
       return;
     }
+    if (product && product.stock <= 0) {
+      toast({ title: "Produto esgotado", variant: "destructive" });
+      return;
+    }
+    if (product && quantity > product.stock) {
+      toast({ title: `Apenas ${product.stock} unidades disponíveis`, variant: "destructive" });
+      return;
+    }
     if (!selectedSize && product?.sizes.length) {
       toast({ title: "Selecione um tamanho", variant: "destructive" });
       return;
@@ -52,6 +62,14 @@ const ProductDetail = () => {
       color: selectedColor,
     });
   };
+
+  const handleToggleFavorite = () => {
+    if (product) {
+      toggleFavorite(product.id, product.name, product.images[0]);
+    }
+  };
+
+  const favorite = product ? isFavorite(product.id) : false;
 
   if (isLoading) {
     return (
@@ -255,6 +273,14 @@ const ProductDetail = () => {
                 >
                   <ShoppingCart className="w-5 h-5 mr-2" />
                   {product.stock === 0 ? "Esgotado" : "Adicionar ao Carrinho"}
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={handleToggleFavorite}
+                  className={favorite ? "text-destructive border-destructive" : ""}
+                >
+                  <Heart className={`w-5 h-5 ${favorite ? "fill-current" : ""}`} />
                 </Button>
               </div>
             </div>
