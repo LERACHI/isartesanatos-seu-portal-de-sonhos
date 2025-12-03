@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Plus, Pencil, Trash2, X } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useAdminProducts, ProductInput } from "@/hooks/useAdminProducts";
 import { Product } from "@/hooks/useProducts";
+import ImageUploader from "@/components/admin/ImageUploader";
 
 const emptyProduct: ProductInput = {
   name: "",
@@ -262,13 +263,11 @@ const AdminProducts = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="images">URLs das Imagens (uma por linha)</Label>
-              <Textarea
-                id="images"
-                value={formData.images.join("\n")}
-                onChange={(e) => setFormData({ ...formData, images: e.target.value.split("\n").map(s => s.trim()).filter(Boolean) })}
-                placeholder="https://exemplo.com/imagem1.jpg"
-                rows={3}
+              <Label>Imagens do Produto</Label>
+              <ImageUploader
+                images={formData.images}
+                onChange={(images) => setFormData({ ...formData, images })}
+                maxImages={5}
               />
             </div>
 
