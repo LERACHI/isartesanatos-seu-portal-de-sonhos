@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, Instagram, Facebook, MessageCircle, User, LogOut, ShoppingCart, Package, Heart } from "lucide-react";
+import { Menu, X, Instagram, Facebook, MessageCircle, User, LogOut, ShoppingCart, Package, Heart, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
+import { useAdmin } from "@/hooks/useAdmin";
 import CartSidebar from "@/components/CartSidebar";
 import {
   DropdownMenu,
@@ -18,6 +19,7 @@ const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { user, signOut, loading } = useAuth();
   const { cartCount } = useCart();
+  const { isAdmin } = useAdmin();
 
   const navLinks = [
     { name: "Início", href: "/" },
@@ -114,6 +116,17 @@ const Header = () => {
                       {user.email}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
+                    {isAdmin && (
+                      <>
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin" className="cursor-pointer">
+                            <Settings className="w-4 h-4 mr-2" />
+                            Painel Admin
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
                     <DropdownMenuItem asChild>
                       <Link to="/pedidos" className="cursor-pointer">
                         <Package className="w-4 h-4 mr-2" />
