@@ -34,6 +34,10 @@ jobs:
         # Lembre-se, este passo só funcionará se você corrigiu o caminho './index.css'
         run: npm run build
 
+      # Fallback SPA para GitHub Pages (serve index.html em qualquer rota)
+      - name: Create 404 fallback
+        run: cp dist/index.html dist/404.html
+
       # --- [ UPLOAD DO ARTEFATO ] ---
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
