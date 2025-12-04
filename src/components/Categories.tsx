@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
-const categoryBebe = "/kit-babitas-aviador-4-pecas-bebe.jpg";
-const categoryJunina = "/vestido-caipira-xadrez-tam-7-a-12-anos.jpg";
-const categoryTematico = "/vestido-tematico.jpg";
+
+const withBase = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
+const categoryBebe = withBase("kit-babitas-aviador-4-pecas-bebe.jpg");
+const categoryJunina = withBase("vestido-caipira-xadrez-tam-7-a-12-anos.jpg");
+const categoryTematico = withBase("vestido-tematico.jpg");
 
 const categories = [
   {

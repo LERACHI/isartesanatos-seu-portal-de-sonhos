@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
+const withBase = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
+
 export interface Product {
   id: string;
   name: string;
@@ -24,7 +26,7 @@ const staticProducts: Product[] = [
     category: "tematico",
     sizes: ["Unico"],
     colors: ["Colorido"],
-    images: ["/par-de-lacos-com-boneca.jpg"],
+    images: [withBase("par-de-lacos-com-boneca.jpg")],
     stock: 25,
     featured: true,
     created_at: "2023-12-28T00:00:00Z",
@@ -38,7 +40,7 @@ const staticProducts: Product[] = [
     category: "bebe",
     sizes: ["Unico"],
     colors: ["Azul", "Personalizado"],
-    images: ["/kit-babitas-aviador-4-pecas-bebe.jpg"],
+    images: [withBase("kit-babitas-aviador-4-pecas-bebe.jpg")],
     stock: 15,
     featured: true,
     created_at: "2023-07-16T00:00:00Z",
@@ -52,7 +54,7 @@ const staticProducts: Product[] = [
     category: "junina",
     sizes: ["7", "8", "10", "12"],
     colors: ["Vermelho", "Personalizado"],
-    images: ["/vestido-caipira-xadrez-tam-7-a-12-anos.jpg"],
+    images: [withBase("vestido-caipira-xadrez-tam-7-a-12-anos.jpg")],
     stock: 8,
     featured: true,
     created_at: "2024-12-29T00:00:00Z",
@@ -67,9 +69,9 @@ const staticProducts: Product[] = [
     sizes: ["7", "8", "10", "12"],
     colors: ["Vermelho", "Personalizado"],
     images: [
-      "/vestido-caipira-rock-tam-7-a-12-anos-junina.jpg",
-      "/vestido-caipira1-rock-tam-7-a-12-anos-maina.jpg",
-      "/vestido-caipira2-rock-tam-7-a-12-anos-floral.jpg",
+      withBase("vestido-caipira-rock-tam-7-a-12-anos-junina.jpg"),
+      withBase("vestido-caipira1-rock-tam-7-a-12-anos-maina.jpg"),
+      withBase("vestido-caipira2-rock-tam-7-a-12-anos-floral.jpg"),
     ],
     stock: 6,
     featured: true,
@@ -85,9 +87,9 @@ const staticProducts: Product[] = [
     sizes: ["2", "4", "6"],
     colors: ["Rosa", "Personalizado"],
     images: [
-      "/vestido3-caipira-babados-rosa-tam-2-a-6-anos-saojoao.jpg",
-      "/vestido1-caipira-babados-rosa-tam-2-a-6-anos-caipira.jpg",
-      "/vestido2-caipira-babados-rosa-tam-2-a-6-anos-junina.jpg",
+      withBase("vestido3-caipira-babados-rosa-tam-2-a-6-anos-saojoao.jpg"),
+      withBase("vestido1-caipira-babados-rosa-tam-2-a-6-anos-caipira.jpg"),
+      withBase("vestido2-caipira-babados-rosa-tam-2-a-6-anos-junina.jpg"),
     ],
     stock: 10,
     featured: true,
@@ -102,7 +104,7 @@ const staticProducts: Product[] = [
     category: "junina",
     sizes: ["Unico"],
     colors: ["Colorido", "Personalizado"],
-    images: ["/faixa-junina-julho.jpg"],
+    images: [withBase("faixa-junina-julho.jpg")],
     stock: 20,
     featured: true,
     created_at: "2024-01-15T00:00:00Z",
@@ -116,7 +118,7 @@ const staticProducts: Product[] = [
     category: "junina",
     sizes: ["Unico"],
     colors: ["Colorido", "Personalizado"],
-    images: ["/tiara-com-chapeu-medio-tiara.jpg"],
+    images: [withBase("tiara-com-chapeu-medio-tiara.jpg")],
     stock: 18,
     featured: true,
     created_at: "2023-12-28T00:00:00Z",
