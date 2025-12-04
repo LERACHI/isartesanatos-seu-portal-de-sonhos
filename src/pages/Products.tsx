@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -8,12 +9,34 @@ import { useProducts } from "@/hooks/useProducts";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const Products = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("newest");
   
   const { data: products, isLoading } = useProducts(
     selectedCategory ? { category: selectedCategory } : undefined
   );
+
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get("categoria");
+    if (categoryFromUrl) {
+      setSelectedCategory(categoryFromUrl);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      searchParams.set("categoria", selectedCategory);
+      setSearchParams(searchParams, { replace: true });
+    } else {
+      searchParams.delete("categoria");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [selectedCategory, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [selectedCategory]);
 
   const sortedProducts = useMemo(() => {
     if (!products) return [];
