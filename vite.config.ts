@@ -5,6 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: mode === "production" ? "/isartesanatos-seu-portal-de-sonhos/" : "/",
   server: {
     host: "::",
     port: 8080,
