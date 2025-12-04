@@ -20,6 +20,7 @@ import AdminStock from "./pages/admin/AdminStock";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+const basename = import.meta.env.BASE_URL || "/";
 
 const App = () => (
   <HelmetProvider>
@@ -28,7 +29,7 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
+          <BrowserRouter basename={basename}>
             <ScrollToTop />
             <Routes>
               <Route path="/" element={<Index />} />
