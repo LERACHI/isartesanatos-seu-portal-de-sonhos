@@ -26,7 +26,7 @@ const Hero = () => {
 
       {/* Content */}
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-3xl">
+        <div className="max-w-4xl">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-rose-light/50 backdrop-blur-sm rounded-full mb-6 animate-fade-in">
             <Star className="w-4 h-4 text-gold fill-gold" />
@@ -49,8 +49,8 @@ const Hero = () => {
           </p>
 
           {/* Description */}
-          <p className="font-body text-lg text-muted-foreground max-w-xl mb-8 animate-slide-up delay-200">
-            Há mais de 10 anos criando fantasias juninas e vestidos temáticos 
+          <p className="font-body text-lg text-muted-foreground max-w-2xl mb-8 animate-slide-up delay-200">
+            Há mais de 10 anos criando fantasias juninas e vestidos temáticos
             exclusivos, feitos à mão com amor e dedicação em Foz do Iguaçu.
           </p>
 
@@ -73,39 +73,9 @@ const Hero = () => {
               </a>
             </Button>
           </div>
-
-          {/* Trust Badges */}
-          <div className="flex flex-wrap items-center gap-6 mt-12 animate-fade-in delay-500">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
-                <span className="font-display text-lg font-semibold text-primary">12+</span>
-              </div>
-              <span className="text-sm text-muted-foreground font-body">Anos de<br />Experiência</span>
-            </div>
-            <div className="w-px h-10 bg-border hidden sm:block" />
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
-                <span className="font-display text-lg font-semibold text-primary">49k</span>
-              </div>
-              <span className="text-sm text-muted-foreground font-body">Seguidores<br />Instagram</span>
-            </div>
-            <div className="w-px h-10 bg-border hidden sm:block" />
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
-                <span className="font-display text-lg font-semibold text-primary">338</span>
-              </div>
-              <span className="text-sm text-muted-foreground font-body">Produtos<br />Disponíveis</span>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-primary/30 rounded-full flex justify-center pt-2">
-          <div className="w-1.5 h-3 bg-primary/50 rounded-full animate-pulse-soft" />
-        </div>
-      </div>
     </section>
   );
 };

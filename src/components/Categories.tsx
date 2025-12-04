@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
-import categoryJunina from "@/assets/category-junina.jpg";
-import categoryTematico from "@/assets/category-tematico.jpg";
-import categoryBebe from "@/assets/category-bebe.jpg";
+const categoryBebe = "/kit-babitas-aviador-4-pecas-bebe.jpg";
+const categoryJunina = "/vestido-caipira-xadrez-tam-7-a-12-anos.jpg";
+const categoryTematico = "/vestido-tematico.jpg";
 
 const categories = [
   {
@@ -30,7 +30,7 @@ const categories = [
 
 const Categories = () => {
   return (
-    <section id="colecoes" className="py-24 bg-gradient-hero">
+    <section id="colecoes" className="py-24 bg-gradient-hero scroll-mt-28">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">

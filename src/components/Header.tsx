@@ -22,9 +22,10 @@ const Header = () => {
   const { isAdmin } = useAdmin();
 
   const navLinks = [
-    { name: "Início", href: "/" },
+    { name: "Início", href: "/#inicio" },
     { name: "Produtos", href: "/produtos" },
     { name: "Sobre", href: "/#sobre" },
+    { name: "Política", href: "/#politica" },
     { name: "Contato", href: "/#contato" },
   ];
 
@@ -43,14 +44,14 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="#inicio" className="flex flex-col items-start">
+          <Link to="/#inicio" className="flex flex-col items-start">
             <span className="font-display text-2xl md:text-3xl font-semibold text-foreground tracking-wide">
               Isartesanatos
             </span>
             <span className="text-xs text-muted-foreground font-body tracking-widest uppercase">
               Ateliê Temático de Sonhos
             </span>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-8">

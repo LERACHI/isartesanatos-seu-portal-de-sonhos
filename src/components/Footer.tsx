@@ -7,15 +7,9 @@ const Footer = () => {
     { name: "Início", href: "#inicio" },
     { name: "Coleções", href: "#colecoes" },
     { name: "Sobre", href: "#sobre" },
+    { name: "Política da Loja", href: "#politica" },
     { name: "Avaliações", href: "#avaliacoes" },
     { name: "Contato", href: "#contato" },
-  ];
-
-  const shopLinks = [
-    { name: "Loja no Elo7", href: "https://www.elo7.com.br/isartesanatos" },
-    { name: "Fantasias Juninas", href: "https://www.elo7.com.br/lista/isartesanatos?segment=product&q=junina" },
-    { name: "Vestidos Temáticos", href: "https://www.elo7.com.br/lista/isartesanatos?segment=product&q=vestido" },
-    { name: "Avaliações", href: "https://www.elo7.com.br/isartesanatos/avaliacoes" },
   ];
 
   const socialLinks = [
@@ -27,9 +21,9 @@ const Footer = () => {
   return (
     <footer className="bg-foreground text-primary-foreground py-16">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12 mb-12">
           {/* Brand */}
-          <div className="lg:col-span-1">
+          <div>
             <div className="mb-6">
               <h3 className="font-display text-2xl font-semibold mb-1">Isartesanatos</h3>
               <p className="font-body text-sm text-primary-foreground/60 tracking-widest uppercase">
@@ -37,7 +31,7 @@ const Footer = () => {
               </p>
             </div>
             <p className="font-body text-primary-foreground/80 text-sm mb-6">
-              Criando fantasias juninas e vestidos temáticos exclusivos desde 2011 
+              Criando fantasias juninas e vestidos temáticos exclusivos desde 2011
               em Foz do Iguaçu, Paraná.
             </p>
             <div className="flex items-center gap-4">
@@ -64,25 +58,6 @@ const Footer = () => {
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="font-body text-primary-foreground/70 hover:text-primary-foreground transition-colors duration-300"
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Shop Links */}
-          <div>
-            <h4 className="font-display text-lg font-semibold mb-4">Nossa Loja</h4>
-            <ul className="space-y-3">
-              {shopLinks.map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="font-body text-primary-foreground/70 hover:text-primary-foreground transition-colors duration-300"
                   >
                     {link.name}
