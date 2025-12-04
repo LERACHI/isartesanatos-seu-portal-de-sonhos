@@ -96,6 +96,24 @@ const staticProducts: Product[] = [
     created_at: "2024-01-11T00:00:00Z",
   },
   {
+    id: "vestido-chapeuzinho-vermelho-luxo-1-6",
+    name: "Vestido Chapeuzinho Vermelho Luxo Tam 1-6 Anos",
+    description:
+      "Vestido infantil Chapeuzinho Vermelho. Feito sob encomenda. Confirmar disponibilidade da estampa; pode sofrer alteracao. Produto pronto em ate 15 dias uteis. Medidas (A x L x C): 20 x 20 x 20 cm. Peso: 1100 g. Codigo: 1F5BD42. Publicado em: 27/12/2024.",
+    price: 605,
+    category: "tematico",
+    sizes: ["1", "2", "4", "6"],
+    colors: ["Vermelho", "Branco", "Personalizado"],
+    images: [
+      withBase("vestido-tematico.jpg"),
+      withBase("vestido-chapeuzinho-vermelho-tam-1-6-anos-festa.jpg"),
+      withBase("vestido1-chapeuzinho-vermelho-tam-1-6-anos-vestido.jpg"),
+    ],
+    stock: 12,
+    featured: true,
+    created_at: "2024-12-27T00:00:00Z",
+  },
+  {
     id: "faixa-junina-chapeu",
     name: "Faixa Junina com Chapéu",
     description:

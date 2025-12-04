@@ -4,55 +4,50 @@ name: Deploy static content to Pages
 
 on:
   push:
-    branches: ['main']
+    branches: ["main"]
 
-# 🔑 Adicione este bloco para resolver o erro 'id-token: write'
 permissions:
   contents: read
   pages: write
-  id-token: write # Permissão essencial para actions/deploy-pages@v4
+  id-token: write
 
 jobs:
-  # 1. JOB DE BUILD: Cria a pasta /dist e a sobe como Artefato
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # --- [ INSTALAÇÃO e BUILD ] ---
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20 # Mantenha a versão correta do Node
-          cache: 'npm'
+          node-version: 20
+          cache: npm
 
       - name: Install dependencies
         run: npm install
 
       - name: Build project
-        # Lembre-se, este passo só funcionará se você corrigiu o caminho './index.css'
         run: npm run build
 
-      # Fallback SPA para GitHub Pages (serve index.html em qualquer rota)
       - name: Create 404 fallback
         run: cp dist/index.html dist/404.html
 
-      # --- [ UPLOAD DO ARTEFATO ] ---
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist' 
-          
-  # 2. JOB DE DEPLOY: Baixa o Artefato e Publica
+          path: "./dist"
+
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build # Garante que só roda depois que o build for concluído
+    needs: build
     steps:
+      - name: Download artifact
+        uses: actions/download-pages-artifact@v3
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        
